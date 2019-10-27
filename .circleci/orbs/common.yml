@@ -12,13 +12,23 @@ jobs:
       - run: |
           docker build -t $DOCKER_BUILD_IMAGE --build-arg CONFIG=$DOCKER_BUILD_CONFIG . 
           docker push $DOCKER_BUILD_IMAGE
+  test:
+    machine: true
+    environment:
+      DOCKER_CONTAINER: ciclismurban-app
+    steps:
+      - setup-vars
+      - docker-login
+      - run: docker pull $DOCKER_BUILD_IMAGE
+      - run: docker run -d --add-host 'localhost localhost.localdomain localtest:127.0.0.1' --name ${DOCKER_CONTAINER} ${DOCKER_BUILD_IMAGE}
+      - run: docker exec ${DOCKER_CONTAINER} yarn test --watchAll=false
   deploy-master:
     machine: true
     steps:
       - setup-vars
       - docker-login
       - deploy:
-          container: ciclismurban-api_master
+          container: ciclismurban-app_master
 
 commands:
   docker-login:
