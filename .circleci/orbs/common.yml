@@ -21,7 +21,7 @@ jobs:
       - docker-login
       - run: docker pull $DOCKER_BUILD_IMAGE
       - run: docker run -d --add-host 'localhost localhost.localdomain localtest:127.0.0.1' --name ${DOCKER_CONTAINER} ${DOCKER_BUILD_IMAGE}
-      - run: docker exec ${DOCKER_CONTAINER} yarn test --watchAll=false
+      - run: docker exec ${DOCKER_CONTAINER} yarn test
   deploy-master:
     machine: true
     steps:
